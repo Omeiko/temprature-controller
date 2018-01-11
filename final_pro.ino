@@ -6,7 +6,8 @@
 #define SPEAKER 3
 
 int BassTab[]={1911,1702,1516,1431,1275,1136,1012};//bass 1~7
-const int B = 3975;   // B value of the thermistor
+const int B = 4275;   // B value of the thermistor
+const int R0 = 100000;
 float resistance;
 int leng = 0;
 unsigned char test[10]="00";
@@ -43,14 +44,16 @@ void loop() {
 
 //function of get present temprature
 float getNowTemprature() {
-  int tempInput = analogRead(A1);
-  resistance=(float)(1023-tempInput)*10000/tempInput; //get the resistance of the sensor;
-  float temperature=1/(log(resistance/10000)/B+1/298.15)-273.15;
-  Serial.print("Current temperature is ");
-  Serial.println(temperature);
-  Serial.println(tempInput);
-  return temperature;
+    int a = analogRead(A0);
+    float R = 1023.0/a-1.0;
+    R = R0*R;
+    float temperature = 1.0/(log(R/R0)/B+1/298.15)-273.15; // convert to temperature via datasheet
+    Serial.print("temperature = ");
+    Serial.println(temperature);
+    delay(100);
+    return temperature;
 }
+ 
 
 //function of speaker
 void sound(uint8_t note_index)
