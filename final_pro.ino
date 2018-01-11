@@ -5,6 +5,7 @@
 #include "TaskScheduler.h"
 #define SPEAKER 3
 
+
 int BassTab[]={1911,1702,1516,1431,1275,1136,1012};//bass 1~7
 const int B = 4275;   // B value of the thermistor
 const int R0 = 100000;
@@ -14,12 +15,6 @@ unsigned char test[10]="00";
 
 void setup() {
   Serial.begin(9600);
-  
-//  Sch.init();
-//  Sch.addTask(getNowTemprature,0,1000,1);
-//  Sch.addTask(soundOfTemp,20,500,1);
-//  Sch.addTask(printNowTemp,30,500,1);
-//  Sch.start();
   pinInit();
   LedSign::Init();
     for(int i=0; ; i++){ //get the length of the text
@@ -33,9 +28,14 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   pinMode(A3,OUTPUT);
-  Serial.println(getNowTemprature());
+  pinMode(A2,OUTPUT);
+  pinMode(A1,INPUT);
+  //Serial.println(getNowTemprature());
   sprintf(test,"%d",(int)getNowTemprature());
-  soundOfTemp(getNowTemprature());
+  //soundOfTemp(getNowTemprature());
+  //int a=analogRead(A2);
+  //Serial.println(a);
+  digitalWrite(A2,0);
   pinMode(A3,INPUT);
   Myfont::Banner(leng,test);
   //Sch.dispatchTasks();
@@ -69,9 +69,8 @@ void sound(uint8_t note_index)
 
 void soundOfTemp(float temp)
 {
-  if (temp>11.0 && temp<12.0) sound(1);
-  if (temp>12.0 && temp<15.0) sound(4);
-  if (temp>15.0 && temp<20.0) sound(7);
+  if (temp < 27.0) {sound(1);digitalWrite(A2,LOW);}
+  if (temp > 30.0) {sound(6);digitalWrite(A2,LOW);}
 }
 
 void pinInit()
